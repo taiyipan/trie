@@ -78,39 +78,49 @@ class Trie:
             return False
         else:
             return self._prefix_search(node._children[letter], letters)
-    # debug purpose
-    def print_trie(self) -> None:
+    # visualize individual branches in trie data structure
+    def visualize(self) -> None:
         self._traverse(self._root)
-        print('None')
     # recursive function to support debug function
     def _traverse(self, node: TrieNode) -> None:
-        print(node._val, '->', end = ' ')
+        if node._val is None:
+            print('root ->', end = ' ')
+        else:
+            print(node._val, '->', end = ' ')
+        next = False
         for key, val in node._children.items():
+            next = True
             self._traverse(val)
+        if not next:
+            print('end')
     # count how many words in trie
     def count_words(self) -> int:
         return self._word_count
     # count how many chars in trie
     def count_chars(self) -> int:
         return self._char_count
+    # return trie as a list data structure
+    def to_list(self) -> list:
+        return self._build_list(self._root, '', [])
+    # recursive function to support to_list function
+    def _build_list(self, node: TrieNode, word: str, words: list) -> list:
+        if node._val is not None:
+            word += node._val
+        if node._word == True:
+            words.append(word)
+        next = False
+        for key, val in node._children.items():
+            next = True
+            words = self._build_list(val, word, words)
+        if not next:
+            word = ''
+        return words
 
-
+# example uses
 # trie = Trie()
-# trie.insert('apple')
-# print('Search apple:', trie.search('apple')) # True
-# print('Search app:', trie.search('app')) # False
-# print('Prefix app:', trie.startsWith('app')) # True
+# trie.insert_line('   hello World! My name is Taiyi. ' )
 # trie.insert('app')
-# print('Search app:', trie.search('app')) # True
-#
-# trie.print_trie()
-# print('Words: {}'.format(trie.count_words()))
-# print('Characters: {}'.format(trie.count_chars()))
-
-trie = Trie()
-trie.insert('hello')
-trie.insert('world')
-trie.insert('hello')
-trie.insert_line('         My name, is Taiyi!  ')
-trie.print_trie()
-print(trie.count_words(), trie.count_chars())
+# trie.insert('apple')
+# trie.visualize()
+# print(trie.count_words(), trie.count_chars())
+# print(trie.to_list())
